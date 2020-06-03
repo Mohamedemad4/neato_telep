@@ -1,0 +1,4 @@
+<launch>
+  <include file="$(find neato_gazebo)/launch/neato_empty_world.launch"/>
+  <include  file="$(find telep_stuff)/launch/telep_common.launch"/>
+</launch>

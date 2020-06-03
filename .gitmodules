@@ -1,0 +1,9 @@
+[submodule "neato"]
+	path = neato
+	url = https://github.com/pietervanzutven/neato
+[submodule "neato_robot"]
+	path = neato_robot
+	url = https://github.com/mikeferguson/neato_robot
+[submodule "jitsi-meet"]
+	path = jitsi-meet
+	url = https://github.com/jitsi/jitsi-meet

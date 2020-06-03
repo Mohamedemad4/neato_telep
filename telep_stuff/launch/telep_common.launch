@@ -1,0 +1,19 @@
+<launch>
+  <group ns="camera">
+    <node pkg="uvc_camera" type="uvc_camera_node" name="camera">
+      <!-- Parameters used to find the camera -->
+      <param name="device" value="/dev/video0"/>
+      <!-- If the above parameters aren't unique, choose the first match: -->
+      <param name="index" value="0"/>
+      <!-- Image size and type -->
+      <param name="width" value="640"/>
+      <param name="height" value="480"/>
+      <!-- choose whichever uncompressed format the camera supports: -->
+      <param name="video_mode" value="uncompressed"/> <!-- or yuyv/nv12/mjpeg -->
+      <param name="frame_rate" value="15"/>
+      <param name="timestamp_method" value="start"/> <!-- start of frame -->
+      <param name="auto_exposure" value="3"/> <!-- use aperture_priority auto exposure -->
+      <param name="auto_white_balance" value="false"/>
+    </node>
+  </group>
+</launch>
