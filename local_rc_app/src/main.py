@@ -25,6 +25,7 @@ cap = cv2.VideoCapture(cap_d)
 
 # function for video streaming
 def video_stream():
+    #https://stackoverflow.com/questions/50922175/to-show-video-streaming-inside-frame-in-tkinter
     ret,frame=cap.read()
     if not ret:
         raise IOError("Can't open Video")
