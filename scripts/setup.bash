@@ -1,5 +1,18 @@
 #/usr/bin/bash
 set -e
+
+if [! -f '.expanded' ]; then
+        echo "resizing FS"
+        touch .expanded
+        wget -c http://files.pghnetwork.net/pghpunkid/fsExpandCheck_stretch.sh
+        sudo sh fsExpandCheck_stretch.sh
+        reboot
+else
+        echo "fs already expanded" 
+        echo "Moving on ..."
+fi
+
+
 sudo apt update
 sudo apt install git x11vnc python-pil.imagetk python-tk unzip -y
 sudo apt-get install --no-install-recommends xserver-xorg -y
@@ -11,9 +24,6 @@ nohup /home/pi/noVNC/utils/launch.sh --listen 6081 --vnc :5901 &
 nohup x11vnc -display :0 -auth /var/run/lightdm/root/\:0 --loop --autoport 5901 --forever -geometry 1024x768  &
 exit 0
 EOT
-wget -c http://files.pghnetwork.net/pghpunkid/fsExpandCheck_stretch.sh
-sudo sh fsExpandCheck_stretch.sh
-reboot
 
 if id -u "telep_user" >/dev/null 2>&1; then
   echo "telep_user exists"
@@ -42,3 +52,4 @@ cd ..
 source /home/pi/rosbots_catkin_ws/devel/setup.bash
 catkin_make -j 2 # so the rpi doesn't crash due to low memory 
 sudo chown -R pi:pi .
+reboot
