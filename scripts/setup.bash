@@ -14,7 +14,7 @@ fi
 
 
 sudo apt update
-sudo apt install git x11vnc python-pil.imagetk python-tk unzip -y
+sudo apt install git x11vnc python-pil.imagetk python-serial libangles-dev libbullet-dev liborocos-kdl1.3 libtf2-kdl-dev python-tf2-kdl liborocos-kdl-dev libeigen3-dev python-tk unzip -y
 sudo apt-get install --no-install-recommends xserver-xorg -y
 sudo apt-get install lxde-core lxappearance -y
 
