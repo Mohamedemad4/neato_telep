@@ -11,13 +11,22 @@ nohup /home/pi/noVNC/utils/launch.sh --listen 6081 --vnc :5901 &
 nohup x11vnc -display :0 -auth /var/run/lightdm/root/\:0 --loop --autoport 5901 --forever -geometry 1024x768  &
 exit 0
 EOT
-wget http://files.pghnetwork.net/pghpunkid/fsExpandCheck_stretch.sh
+wget -c http://files.pghnetwork.net/pghpunkid/fsExpandCheck_stretch.sh
 sudo sh fsExpandCheck_stretch.sh
-sudo adduser telep_user --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
-echo 'telep_user:123alpha' | chpasswd
+reboot
+
+if id -u "telep_user" >/dev/null 2>&1; then
+  echo "telep_user exists"
+else
+  sudo adduser telep_user --gecos "First Last,RoomNumber,WorkPhone,HomePhone" --disabled-password
+  echo 'telep_user:123alpha' | chpasswd
+fi
+
 cd /home/telep_user
 wget -c https://github.com/Mohamedemad4/neato_telep/raw/master/telep_user_config.zip
 unzip telep_user_config.zip
+sudo chown -R telep_user:telep_user .config
+
 cd /home/pi
 [ ! -d 'noVNC' ] && git clone https://github.com/novnc/noVNC
 [ ! -d 'neato_telep' ] && git clone https://github.com/mohamedemad4/neato_telep
