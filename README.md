@@ -12,13 +12,13 @@ Enjoy!
 
 
 ## tasks
-    - setup automatic installation for ros tf  (required by the neato node)
-    - optimize local_rc_app to work smoothly on the raspberry pi (tested on pi 3b+)
-    - test it with neato.py 
-    - some webapp to manage users and sessions and whatnot (idk yet. probably needs a whole section)
+  - setup automatic installation for ros tf  (required by the neato node)
+  - optimize local_rc_app to work smoothly on the raspberry pi (tested on pi 3b+)
+  - test it with neato.py 
+  - some webapp to manage users and sessions and whatnot (idk yet. probably needs a whole section)
 
 
 ## troubleshooting/common problems
  ### [NOVNC can't connect to server](#novnc_websocket_host_problem) 
-    this usually because noVNC tries to connect to the websocket instance running on the hostname 
+   this usually because noVNC tries to connect to the websocket instance running on the hostname 
     for example if the PIs hostname is raspberrypi noVNC will try to connect ```ws://raspberrypi:6081``` even if you resolved the pi at ```http://anotherhostname:6081
