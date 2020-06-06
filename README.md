@@ -12,7 +12,6 @@ Enjoy!
 
 
 ## tasks
-  - setup automatic installation for ros tf  (required by the neato node)
   - optimize local_rc_app to work smoothly on the raspberry pi (tested on pi 3b+)
   - test it with neato.py 
   - some webapp to manage users and sessions and whatnot (idk yet. probably needs a whole section)
