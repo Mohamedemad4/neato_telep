@@ -48,7 +48,7 @@ def start_vpn_service():
 @app.route('/start_streaming/<stream2URI>/')
 @log_requests_and_origin
 def start_streaming(stream2URI):
-    stream2URI="http://"+stream2URI
+    stream2URI="http://"+stream2URI.replace("-","/")
     cmd=ffmpeg_stream_cmd.format(stream2URI=stream2URI,video_device=video_device,res=res)
     if cmd in sess_pool.process_dict.keys():
         return "process already running",400
@@ -71,7 +71,7 @@ def launch_telep(rosmaster_URI,n):
 @app.route('/stop_streaming/<stream2URI>/')
 @log_requests_and_origin
 def stop_streaming(stream2URI):
-    stream2URI="http://"+stream2URI
+    stream2URI="http://"+stream2URI.replace("-","/")
     cmd=ffmpeg_stream_cmd.format(stream2URI=stream2URI,video_device=video_device,res=res)
     if cmd not in sess_pool.process_dict.keys():
         return "no such process is running",400
@@ -102,7 +102,7 @@ class session_pool():
         
     def session_process_thread(self,cmd):
         log.debug("starting command "+cmd)
-        exit_code=sp.call('({0})'.format(cmd),stdout=open(os.devnull, 'wb'),shell=True)
+        exit_code=sp.call('({0})'.format(cmd),stdout=open(os.devnull, 'wb'),shell=True,executable='/bin/bash')
         return self.on_exit(cmd,exit_code)
 
     def run_session_process(self,cmd):   

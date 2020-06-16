@@ -35,7 +35,7 @@ class neato_bot():
         rospy.loginfo("{0}:{1} is starting the stream at {2} from {3}".format(self.token,self.ip,self.stream_url,self.stream2url))
 
         self.local_session_pool.run_session_process(self.cmd)
-        self.call_mini_rest_service("start_streaming/{0}".format(self.stream2url))
+        self.call_mini_rest_service("start_streaming/{0}".format(self.stream2url.replace("http://","").replace("/","-")))
 
         return
 
