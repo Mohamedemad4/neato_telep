@@ -22,6 +22,8 @@ stream_server_path=rospy.get_param('~stream_server_path', None)
 hostname=rospy.get_param('~hostname', None)
 rosmaster_uri=rospy.get_param('~rosmaster_uri', None)
 
+bind_on=rospy.get_param('~bind_on', "0.0.0.0")
+bind_port=rospy.get_param('~bind_port', 5000)
 
 bot_pool=neato_pool(mini_rest_port=mini_rest_port,neato_ip_range=neato_ip_range,neato_ttl=neato_ttl
     ,houseKeep_every=houseKeep_every,stream_server_path=stream_server_path,hostname=hostname,rosmaster_uri=rosmaster_uri)
@@ -71,8 +73,7 @@ def forward_ctrl(token,spd,x,y,z,th):
     return ""
 
 if __name__=="__main__":
-    ph=("0.0.0.0",5000)
-    rospy.loginfo("Starting Orcha Sever on "+str(ph))
+    ph=(bind_on,bind_port)
     rospy.loginfo("Starting Orcha Sever on "+str(ph))
     server = WSGIServer(ph, app) 
     server.serve_forever()

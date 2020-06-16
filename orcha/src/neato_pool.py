@@ -9,6 +9,28 @@ from neato_bot import neato_bot
 
 
 class neato_pool():
+    """
+    neato_pool:Used to manage and interact with Neatos that are on the same network and running mini_rest.py
+    Arguments:
+        mini_rest_port: what port does mini_rest.py bind on?
+        neato_ip_range: what's the Ip range of the Neatos? (MUST be readable by Nmap!) 
+            ex: 192.168.1.1/25
+        houseKeep_every: in seconds. how often to pool for new neatos and check for expired neatos
+        neato_ttl: how long does a neato live after a user logs on on it? (check neato_bot.py for more details)
+        
+        stream_server_path: full path to stream-server binary file (taken from https://github.com/chanshik/jsmpeg-stream-go)
+
+        hostname: what is the hostname of the Machine? (Used by neatos to access the server for streaming and such )
+            ex: 
+                - orcha.example.com
+                - 10.8.0.1
+
+        rosmaster_uri: a ROSMASTER_URI
+            ex: http://10.8.0.1:11311 
+
+        WARNING SECURITY NOTICE: the ROSMASTER port must NOT be exposed to the public service.
+
+    """
     def __init__(self,mini_rest_port=7601,neato_ip_range="192.168.1.1/25",neato_ttl=300,houseKeep_every=10,stream_server_path="./stream-server",hostname=None,rosmaster_uri=None):
         self.neatos={}
         self.mini_rest_port=mini_rest_port
@@ -48,6 +70,7 @@ class neato_pool():
         self.pool_thread.start()
     
     def manage_neato_swarm(self):
+        "ongoing thread that does Housekeeping; calls search_for_new_neatos() and check_for_expired_neatos()"
         while True:
             self.search_for_new_neatos()
             self.check_for_expired_neatos()
@@ -55,6 +78,7 @@ class neato_pool():
             rospy.logdebug("Housekeeping Swarm!")
 
     def search_for_new_neatos(self):
+        "Searches for New neatos on the IP range and adds them to the pool"
         for ip in scan_for_neatos(port=self.mini_rest_port,scan_range=self.neato_ip_range):
             if ip in [self.neatos[key].ip for key in self.neatos]:
                 rospy.logdebug("Neato with ip:{0} is already in the pool, skipping..".format(ip))
@@ -64,6 +88,7 @@ class neato_pool():
             self.update_neatos(token,bot)
 
     def check_for_expired_neatos(self):
+        "checks for neatos that have been used to expire them beyond their ttl"
         for token in self.getNeato_tokens():
             bot=self.getNeato(token)
             if bot.been_logged_on_this_session==True:

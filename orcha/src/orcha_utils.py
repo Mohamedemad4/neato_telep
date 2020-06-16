@@ -41,6 +41,7 @@ def make_cool_name(dont_pick=[]):
     return name+"_"+randomString()
 
 def pick_an_open_port(port_range=[5000,10000]):
+    "Picks an open port at random if it's being used pick another one,keep at it till it returns an unused port within port_range"
     open_ports=[i.laddr.port for i in psutil.net_connections()]
     proba_port=random.randint(port_range[0],port_range[1])
     if proba_port in open_ports:
@@ -48,15 +49,28 @@ def pick_an_open_port(port_range=[5000,10000]):
     return proba_port
 
 class session_pool():
+    """
+    Session_pool is used to run long running processes in the background
+    Usage:
+
+        sess_pool=session_pool()
+    
+        sess_pool.run_session_process("command")
+        sess_pool.kill_session_process("command")
+
+    NOTICE: supply command without the & argument run_session_process() handles pushing to the background for
+    """
     def __init__(self):
         self.process_dict={}
         
     def session_process_thread(self,cmd):
+        "Internal Method where the actual thread runs"
         rospy.logdebug("starting command "+cmd)
         exit_code=sp.call('({0})'.format(cmd),stdout=open(os.devnull, 'wb'),shell=True)
         return self.on_exit(cmd,exit_code)
 
     def run_session_process(self,cmd):   
+        """run Session Process (nonblocking)"""
         proc_thread=Process(target=self.session_process_thread,args=(cmd,))
         proc_thread.start()
         self.process_dict.update({cmd:proc_thread})
@@ -69,6 +83,7 @@ class session_pool():
         del self.process_dict[cmd]
 
     def on_exit(self,cmd,exit_code):
+        "Runs on command exit"
             if exit_code==0:
                 rospy.logdebug("{0} exited with exit code 0".format(cmd))
             else:

@@ -6,6 +6,17 @@ from orcha_utils import *
 from geometry_msgs.msg import Twist
 
 class neato_bot():
+    """
+    neato_bot() instance used for C&C of the Neato instances Mostly just calls mini_rest.py APIs
+    for extensive documentation of arguments check neato_pool.py
+    Arguments:
+        ip: the IP for the Neato Instance
+        token: (Mutable) the Token for this Neato instance this is the actual part that "Expires"
+
+        alive_since: default is zero set to Unix Time since a user first logged on it 
+        been_logged_on_this_session: flag used so a user can't keep reseting the alive_since counter
+        streaming_port_range: range to search for ports to spawn for stream-server
+    """
     def __init__(self,ip,token,rest_port=7061,streaming_port_range=[6000,10000],stream_server_path="./stream-server",hostname=None,rosmaster_uri=""):
         self.ip=ip
         self.token=token
@@ -72,6 +83,7 @@ class neato_bot():
         return
 
     def call_mini_rest_service(self,serv):
+        "Helper function calls the Actual API from mini_rest.py"
         url="http://{0}:{1}/{2}".format(self.ip,self.rest_port,serv.replace("http://",""))
         rospy.logdebug("calling mini Rest with URL {0}".format(url))
         try:
@@ -87,6 +99,7 @@ class neato_bot():
         return
 
     def pub_twist_from_spd(self,speed,cords):
+        "Publish Twist to the Neato Node"
         twist = Twist()
         x,y,z,th=cords
         twist.linear.x = x*speed; twist.linear.y = y*speed; twist.linear.z = z*speed;

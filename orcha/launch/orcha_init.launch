@@ -1,5 +1,9 @@
 <launch>
   <node name="orcha" pkg="orcha" type="orcha_main.py" output="screen">
+      <!--For docs on those parameters orcha/netao_pool.py-->
+      <param name="bind_on" value="0.0.0.0" />
+      <param name="bind_port" value="5000" />
+      
       <param name="mini_rest_port" value="7601" />
       <param name="neato_ip_range" value="192.168.1.1/25" />
       <param name="neato_ttl" value="300" />
