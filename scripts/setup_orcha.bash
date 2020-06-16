@@ -1,13 +1,31 @@
 #/usr/bin/bash
 set -e
 
-# install requests nmap flask rostools
-# or maybe make me a dockerfile instead?
+sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 
-Problems:
-    - IP conflict on duplicate-cn
-add those to the /etc/openvpn/server/server.conf
-local 192.168.1.3
+sudo apt update
+sudo apt install dnsutils python-pip nmap git ros-melodic-ros-base -y
+pip install Flask==1.0.2 gevent==1.4.0 requests==2.22.0
+
+HOSTNAME=$(dig @resolver1.opendns.com ANY myip.opendns.com +short)
+echo $HOSTNAME
+
+wget https://git.io/vpn -O openvpn-install.sh 
+export APPROVE_INSTALL=y
+export APPROVE_IP=y
+export IPV6_SUPPORT=n
+export PORT_CHOICE=1
+export PROTOCOL_CHOICE=1
+export DNS=1
+export COMPRESSION_ENABLED=n
+export CUSTOMIZE_ENC=n
+export CLIENT=neatos
+export PASS=1
+./openvpn-install.sh
+
+sudo tee /etc/openvpn/server/server.conf > /dev/null <<EOT
+local $HOSTNAME
 port 1194
 proto tcp
 dev tun
@@ -34,3 +52,28 @@ persist-tun
 status openvpn-status.log
 verb 3
 crl-verify crl.pem
+EOT
+
+sudo tee /etc/rc.local > /dev/null <<EOT
+#!/bin/bash -e
+sudo openvpn ~/neatos.ovpn &
+source ~/telep_ws/devel/setup.bash
+roslaunch orcha orcha_init.launch &
+exit 0
+EOT
+sudo chmod +x /etc/rc.local
+
+sudo systemctl enable openvpn-server@
+sudo systemctl start openvpn-server@
+cd ~/
+[ ! -d 'neato_telep' ] && git clone https://github.com/mohamedemad4/neato_telep
+mkdir telep_ws
+cp -r neato_telep telep_ws/
+cd telep_ws
+mv neato_telep src 
+cd src
+git submodule init
+git submodule update
+cd ..
+source /opt/ros/melodic/setup.bash
+catkin_make -j 4

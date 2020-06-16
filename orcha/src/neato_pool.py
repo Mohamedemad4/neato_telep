@@ -14,6 +14,8 @@ class neato_pool():
     Arguments:
         mini_rest_port: what port does mini_rest.py bind on?
         neato_ip_range: what's the Ip range of the Neatos? (MUST be readable by Nmap!) 
+        NOTE: this is there range inside the OpenVPN network not in their local network
+        this is used by Orcha to communicate with them
             ex: 192.168.1.1/25
         houseKeep_every: in seconds. how often to pool for new neatos and check for expired neatos
         neato_ttl: how long does a neato live after a user logs on on it? (check neato_bot.py for more details)
