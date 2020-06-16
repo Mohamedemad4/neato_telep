@@ -1,5 +1,5 @@
 <launch>
-  <node name="local_rc_app" pkg="local_rc_app" type="main.py" output="screen">
-    <param name="video_capture" value="/dev/video0" />
-  </node>
+<!--
+  Launch the Neato Node
+-->
 </launch>

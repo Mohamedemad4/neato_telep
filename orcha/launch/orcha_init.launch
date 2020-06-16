@@ -1,3 +1,11 @@
 <launch>
-  <node name="orcha" pkg="orcha" type="orcha_main.py" output="screen"></node>
+  <node name="orcha" pkg="orcha" type="orcha_main.py" output="screen">
+      <param name="mini_rest_port" value="7601" />
+      <param name="neato_ip_range" value="192.168.1.1/25" />
+      <param name="neato_ttl" value="300" />
+      <param name="houseKeep_every" value="10" />
+      <param name="stream_server_path" value="$(find orcha)/msc/stream-server" />
+      <param name="hostname" value="192.168.1.3" />
+      <param name="rosmaster_uri" value="http://192.168.1.3:11311/" />
+  </node>
 </launch>

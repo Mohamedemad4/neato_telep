@@ -5,12 +5,10 @@ import string
 import random
 import requests as req
 import subprocess as sp
-from orcha_logger import log
 from multiprocessing import Process
 
 def scan_for_neatos(port=7061,scan_range="192.168.1.1/25"):
     a=os.popen("nmap -p {0} {1}".format(port,scan_range)).read() # TODO: use subprocess and check it it exits cleanly    
-    #log.debug("nmap output is \n "+a)
     open_hosts=[]
     for line_idx,line in enumerate(a.split("\n")):
         if line.startswith(str(port)) and line.split(" ")[1]=="open":
@@ -19,9 +17,9 @@ def scan_for_neatos(port=7061,scan_range="192.168.1.1/25"):
                 verify_neato=req.get("http://{0}:{1}/make_me_coffee".format(possible_neato,port))
                 if verify_neato.__dict__["status_code"]==418:
                     open_hosts.append(possible_neato)
-                    log.debug("found host "+possible_neato)
+                    rospy.logdebug("found host "+possible_neato)
             except Exception as e:
-                log.warn(str(e))
+                rospy.logwarn(str(e))
     return open_hosts
 
 def randomString(stringLength=4):
@@ -54,7 +52,7 @@ class session_pool():
         self.process_dict={}
         
     def session_process_thread(self,cmd):
-        log.debug("starting command "+cmd)
+        rospy.logdebug("starting command "+cmd)
         exit_code=sp.call('({0})'.format(cmd),stdout=open(os.devnull, 'wb'),shell=True)
         return self.on_exit(cmd,exit_code)
 
@@ -65,13 +63,13 @@ class session_pool():
         return proc_thread
 
     def kill_session_process(self,cmd):
-        log.debug("killing {0} ".format(cmd))
+        rospy.logdebug("killing {0} ".format(cmd))
         proc_thread=self.process_dict[cmd]
         proc_thread.terminate()
         del self.process_dict[cmd]
 
     def on_exit(self,cmd,exit_code):
             if exit_code==0:
-                log.debug("{0} exited with exit code 0".format(cmd))
+                rospy.logdebug("{0} exited with exit code 0".format(cmd))
             else:
-                log.warn("{0} existed with NON zero exit code ".format(cmd))
+                rospy.logwarn("{0} existed with NON zero exit code ".format(cmd))
